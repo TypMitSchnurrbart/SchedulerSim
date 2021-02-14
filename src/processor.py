@@ -3,6 +3,10 @@ Creating a Class represeting the function of the processor
 """
 
 class Processor():
+    """
+    Class "simulating" a Process but only the clock timing
+    This is a class to support possibility for multi-core sims
+    """
     def __init__(self, clock_time = 0):
         self.clock_time = clock_time
 

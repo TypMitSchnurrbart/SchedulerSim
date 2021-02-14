@@ -1,42 +1,71 @@
 """
 Main for a small scheduler sim with gui; this its mainly for testing at the moment
+Author:     Alexander Müller
+Version:    0.1.1
+Date:       14.02.2021
 """
+
+# Load system libraries---------------------------------------------------
 import sys
 import time
 from datetime import datetime
 
+# Load PyQt5 Library Classes----------------------------------------------
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 
-from scheduler_sim_gui import Ui_main_window
-from src.processor import Processor
+# Load Constants----------------------------------------------------------
 from src.const import PROCESS_LIST
-from src.process import Process
 
+# Load different Classes--------------------------------------------------
+from src.process import Process
+from src.counter_worker import Counter_Worker
+from scheduler_sim_gui import Ui_main_window
+
+
+#-------------------------------------------------------------------------
+#   Main Window Class
+#   importing from QtDesginer Created UI translated to python
+#-------------------------------------------------------------------------
 class Window(QMainWindow, Ui_main_window):
+    """
+    Class of our GUI
+    parent  QMainWindow
+    parent  Ui_main_window
+    """
+
+    # Class Constructor with parent Constructor as super
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setupUi(self)
 
-        # Add Button
+        # Click Event for Add Button
         self.pushButton_add.clicked.connect(self.add_process_to_queue)
 
 
     def add_process_to_queue(self):
+        """
+        Function to create a Process Object from the inserted data in the Window
+        """
 
+        # Get Data From Window
         arrival_time = self.spin_arraival_time.value()
         burst_time = self.spin_burst_time.value()
 
+        # Create Process based on Data
         PROCESS_LIST.append(Process(arrival_time, burst_time))
 
+        # Prep output for text box
         pid = PROCESS_LIST[-1].get_pid()
         arrival_time = PROCESS_LIST[-1].get_arrival_time()
         burst_time = PROCESS_LIST[-1].get_burst_time()
-
         current_time = datetime.now().strftime("[%H:%M:%S]\t")
+
+        # Give user feedback to successful creatin an Process
         self.terminal_output.append(f"{current_time}Process added.\tPID: {pid}\tArrival: {arrival_time}\tBurst: {burst_time}")
 
+    
     def start_btn_state(self):
         if not self.pushButton.isChecked():
             self.threadpool = QThreadPool()
@@ -46,26 +75,6 @@ class Window(QMainWindow, Ui_main_window):
 
         test_worker = Counter_Worker(self)
         self.threadpool.start(test_worker)
-
-
-class Counter_Worker(QRunnable):
-
-    def __init__(self, window_to_work):
-        super(Counter_Worker, self).__init__()
-        self.window = window_to_work
-
-    def run(self):
-        single_core = Processor()
-
-        while single_core.get_clock_time() <= 10:
-            #TODO interrupt button as statement
-            clock_time = single_core.get_clock_time_step()
-            time.sleep(1)
-            self.window.system_clock_display.display(clock_time)
-            self.window.system_clock_display.repaint()
-        
-        clock_time = single_core.reset_clock_time()
-        self.window.system_clock_display.display(clock_time)
 
 if __name__ == "__main__":
 

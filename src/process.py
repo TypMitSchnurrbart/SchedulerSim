@@ -8,37 +8,64 @@ class Process():
 
     number_of_processes = START_ID
 
-    def __init__(self, arrvial_time, burst_time, waiting_time = 0):
-
+    def __init__(self, arrival_time, burst_time, waiting_time = 0, niceness = 0, deadline = None):
+        """
+        Constructor of a Process
+        param - {int} - arrival_time - Clock when the process enters waiting queue
+        param - {int} - burst_time - Clock Ticks the process needs to be processed
+        param - {int} - waiting_time - Time the process needed to wait; init as Zero
+        param - {int} - niceness - Prority value, dont need for every scheduler algorithm
+        param - {int} - deadline - Clock value when the process needs to be finished; dont need for every scheduler algorithm
+        """
         Process.number_of_processes += ID_OFFSET
 
         self.pid = Process.number_of_processes
-        self.arrvial_time = arrvial_time
+        self.arrival_time = arrival_time
         self.burst_time = burst_time
         self.waiting_time = waiting_time
 
-    # Setter / Getter for Arrival Time 
     def get_arrival_time(self):
-        return self.arrvial_time
+        """
+        Getter for the arrival_time set at creation
+        return - {int} - arrival_time of calling object
+        """
+        return self.arrival_time
 
-    # Setter / Getter for Burst Time 
     def get_burst_time(self):
+        """
+        Getter for current burst_time
+        return - {int} - burst_time of calling object
+        """
         return self.burst_time
 
     def set_burst_time(self, remaining_time):
+        """
+        Possibility to change the burst_time until it hits zero 
+        param - {int} - remaining_time - new burst_time value subtrated by the time the process got already processed
+        """
         self.burst_time = remaining_time
         return 0
 
-    # Setter / Getter for Waiting Time
     def get_waiting_time(self):
+        """
+        Setter / Getter for Waiting Time
+        return - {int} - waiting_time of calling object
+        """
         return self.waiting_time
 
     def set_waiting_time(self, waited_time):
+        """
+        Setter for the waiting_time
+        param - {int} - waited_time - Value of time already waited, doesnt have to be final  
+        """
         self.waiting_time = waited_time
-        return 0
+        return 
 
-    # Setter for PID
     def get_pid(self):
+        """
+        Setter for PID
+        return - {int} - process id of calling object
+        """
         return self.pid
 
     #TODO Finished Process Method decrementing pid counter
