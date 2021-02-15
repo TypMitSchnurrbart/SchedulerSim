@@ -20,7 +20,7 @@ from src.const import PROCESS_LIST
 
 # Load different Classes--------------------------------------------------
 from src.process import Process
-from src.counter_worker import Counter_Worker
+from src.scheduler import Scheduler
 from scheduler_sim_gui import Ui_main_window
 
 
@@ -42,6 +42,7 @@ class Window(QMainWindow, Ui_main_window):
 
         # Click Event for Add Button
         self.pushButton_add.clicked.connect(self.add_process_to_queue)
+        self.pushButton_start.clicked.connect(self.determine_scheduler)
 
 
     def add_process_to_queue(self):
@@ -50,31 +51,51 @@ class Window(QMainWindow, Ui_main_window):
         """
 
         # Get Data From Window
-        arrival_time = self.spin_arraival_time.value()
+        arrival_time = self.spin_arrival_time.value()
         burst_time = self.spin_burst_time.value()
+        niceness = self.spin_niceness.value()
+        deadline = self.spin_deadline.value()
 
         # Create Process based on Data
-        PROCESS_LIST.append(Process(arrival_time, burst_time))
+        PROCESS_LIST.append(Process(arrival_time, burst_time, niceness, deadline))
 
         # Prep output for text box
         pid = PROCESS_LIST[-1].get_pid()
         arrival_time = PROCESS_LIST[-1].get_arrival_time()
         burst_time = PROCESS_LIST[-1].get_burst_time()
+        niceness = PROCESS_LIST[-1].get_niceness()
+        deadline = PROCESS_LIST[-1].get_deadline()
         current_time = datetime.now().strftime("[%H:%M:%S]\t")
 
         # Give user feedback to successful creatin an Process
-        self.terminal_output.append(f"{current_time}Process added.\tPID: {pid}\tArrival: {arrival_time}\tBurst: {burst_time}")
+        self.terminal_output.append(f"{current_time}Process added.\tPID: {pid}\tArrival: {arrival_time}\tBurst: {burst_time}\tPriority: {niceness}\tDeadline: {deadline}")
+
+        # Reset the spinboxes values
+        self.spin_arrival_time.setValue(0)
+        self.spin_burst_time.setValue(1)
+        self.spin_niceness.setValue(0)
+        self.spin_deadline.setValue(1)
+
+        return
+
+
+    def determine_scheduler(self):
+
+        # Determine which radio button is pressed
+
+        return
 
     
-    def start_btn_state(self):
-        if not self.pushButton.isChecked():
-            self.threadpool = QThreadPool()
-            self.start_app()
+    def start_scheduling(self, chosen_scheduler):
+        
+        # Start Scheduliung progress; is a class even necessary? dont know
+        self.thread_handler = QThreadPool()
+        self.start_app()
 
-    def start_app(self):
+        scheduler = Scheduler(self)
+        self.thread_handler.start(scheduler)
 
-        test_worker = Counter_Worker(self)
-        self.threadpool.start(test_worker)
+        return
 
 if __name__ == "__main__":
 

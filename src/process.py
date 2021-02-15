@@ -8,7 +8,7 @@ class Process():
 
     number_of_processes = START_ID
 
-    def __init__(self, arrival_time, burst_time, waiting_time = 0, niceness = 0, deadline = None):
+    def __init__(self, arrival_time, burst_time, niceness = 0, deadline = 0, waiting_time = 0):
         """
         Constructor of a Process
         param - {int} - arrival_time - Clock when the process enters waiting queue
@@ -23,6 +23,8 @@ class Process():
         self.arrival_time = arrival_time
         self.burst_time = burst_time
         self.waiting_time = waiting_time
+        self.niceness = niceness
+        self.deadline = deadline
 
     def get_arrival_time(self):
         """
@@ -68,4 +70,18 @@ class Process():
         """
         return self.pid
 
-    #TODO Finished Process Method decrementing pid counter
+    def get_niceness(self):
+        """
+        Getter for niceness
+        return - {int} - Priority level of calling object
+        """
+        return self.niceness
+
+    def get_deadline(self):
+        """
+        Getter for the deadline
+        return - {int} - deadline of calling object
+        """
+        return self.deadline
+
+    #TODO Finished Process Method decrementing pid counter __del__?

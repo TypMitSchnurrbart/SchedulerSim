@@ -10,7 +10,7 @@ from PyQt5.QtWidgets import *
 
 from src.processor import Processor
 
-class Counter_Worker(QRunnable):
+class Scheduler(QRunnable):
     """
     Class to create a thread in our GUI Process in order to have a Widget updating
     itself without the window freezing
@@ -21,7 +21,7 @@ class Counter_Worker(QRunnable):
         Constructor of Counter_Worker
         param   {obj}   window_to_work - Is the Object aof the class Window in which this widget shall be working
         """
-        super(Counter_Worker, self).__init__()
+        super(Scheduler, self).__init__()
         self.window = window_to_work
 
 
