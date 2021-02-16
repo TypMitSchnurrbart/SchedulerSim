@@ -16,11 +16,12 @@ from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 
 # Load Constants----------------------------------------------------------
-from src.const import PROCESS_LIST
+from src.const import PROCESS_LIST, FCFS, SJF, HELPER, TEXT_DELAY
 
 # Load different Classes--------------------------------------------------
 from src.process import Process
 from src.scheduler import Scheduler
+from src.helper import Helper
 from scheduler_sim_gui import Ui_main_window
 
 
@@ -65,10 +66,9 @@ class Window(QMainWindow, Ui_main_window):
         burst_time = PROCESS_LIST[-1].get_burst_time()
         niceness = PROCESS_LIST[-1].get_niceness()
         deadline = PROCESS_LIST[-1].get_deadline()
-        current_time = datetime.now().strftime("[%H:%M:%S]\t")
 
         # Give user feedback to successful creatin an Process
-        self.terminal_output.append(f"{current_time}Process added.\tPID: {pid}\tArrival: {arrival_time}\tBurst: {burst_time}\tPriority: {niceness}\tDeadline: {deadline}")
+        self.terminal_output.append(f"{HELPER[0].get_current_time()}Process added.\tPID: {pid}\tArrival: {arrival_time}\tBurst: {burst_time}\tPriority: {niceness}\tDeadline: {deadline}")
 
         # Reset the spinboxes values
         self.spin_arrival_time.setValue(0)
@@ -81,7 +81,19 @@ class Window(QMainWindow, Ui_main_window):
 
     def determine_scheduler(self):
 
-        # Determine which radio button is pressed
+        # First check if there is even a process
+        if len(PROCESS_LIST) == 0:
+            self.display_text("Please add at least a Process first!")
+            return
+
+        if self.radio_fcfs.isChecked():
+            self.start_scheduling(FCFS)
+
+        elif self.radio_sjf.isChecked():
+            self.start_scheduling(SJF)
+
+        else:
+            self.display_text("Choose a Scheduler Algorithm!")
 
         return
 
@@ -90,14 +102,32 @@ class Window(QMainWindow, Ui_main_window):
         
         # Start Scheduliung progress; is a class even necessary? dont know
         self.thread_handler = QThreadPool()
-        self.start_app()
 
-        scheduler = Scheduler(self)
+        scheduler = Scheduler(self, chosen_scheduler)
         self.thread_handler.start(scheduler)
 
         return
 
+
+    def display_text(self, output):
+        """
+        Display the Text with the current time
+        param - {string} - output - Text to display
+        return - {int} - default Zero
+        """
+
+        # Give user feedback
+        time.sleep(TEXT_DELAY) 
+        self.terminal_output.append(f"{HELPER[0].get_current_time()}{output}")
+        self.terminal_output.ensureCursorVisible()
+
+        return
+
+
 if __name__ == "__main__":
+
+    # Create our Helper object
+    HELPER.append(Helper())
 
     app = QApplication(sys.argv)
     win = Window()

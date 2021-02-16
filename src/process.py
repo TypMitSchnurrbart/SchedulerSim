@@ -6,7 +6,8 @@ from src.const import START_ID, ID_OFFSET
 
 class Process():
 
-    number_of_processes = START_ID
+    number_of_processes = 0
+    process_id_generator = START_ID
 
     def __init__(self, arrival_time, burst_time, niceness = 0, deadline = 0, waiting_time = 0):
         """
@@ -17,9 +18,10 @@ class Process():
         param - {int} - niceness - Prority value, dont need for every scheduler algorithm
         param - {int} - deadline - Clock value when the process needs to be finished; dont need for every scheduler algorithm
         """
-        Process.number_of_processes += ID_OFFSET
+        Process.number_of_processes += 1
+        Process.process_id_generator += ID_OFFSET
 
-        self.pid = Process.number_of_processes
+        self.pid = Process.process_id_generator
         self.arrival_time = arrival_time
         self.burst_time = burst_time
         self.waiting_time = waiting_time
@@ -44,9 +46,10 @@ class Process():
         """
         Possibility to change the burst_time until it hits zero 
         param - {int} - remaining_time - new burst_time value subtrated by the time the process got already processed
+        return - {int} - burst_time
         """
         self.burst_time = remaining_time
-        return 0
+        return self.burst_time
 
     def get_waiting_time(self):
         """
@@ -60,7 +63,7 @@ class Process():
         Setter for the waiting_time
         param - {int} - waited_time - Value of time already waited, doesnt have to be final  
         """
-        self.waiting_time = waited_time
+        self.waiting_time += waited_time
         return 
 
     def get_pid(self):
