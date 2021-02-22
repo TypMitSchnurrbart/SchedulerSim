@@ -7,7 +7,7 @@ from datetime import datetime
 
 # Modul imports
 from src.process import Process
-from src.const import SJF, FCFS, SRTF, PROCESS_LIST, RR, RR_QUANTUM, LAST_PID
+from src.const import SJF, FCFS, SRTF, PROCESS_LIST, RR, RR_QUANTUM, LAST_RR_INDEX
 
 
 class Helper():
@@ -59,7 +59,7 @@ class Helper():
         # Check Context Switch Condition for SRFT
         if scheduler == SRTF:
 
-            # Context Switch has to be made if process arrived that is shorter than current
+            # Context Switch has to be made if process is arriving that is shorter than current remaining burst time
             for i in range(0, len(PROCESS_LIST)):
                 if PROCESS_LIST[i].get_arrival_time() == single_core.get_clock_time() + 1:
                     if PROCESS_LIST[i].get_burst_time() < active_process.get_burst_time():
@@ -68,7 +68,10 @@ class Helper():
         # Check Context Switch for RR
         if scheduler == RR:
             if (iterator + 1) == RR_QUANTUM[0]:
-                LAST_PID[0] = active_process.get_pid()
-                return True
+                
+                for index in range(0, len(PROCESS_LIST)):
+                    if PROCESS_LIST[index].get_pid() == active_process.get_pid():
+                        LAST_RR_INDEX[0] = index
+                        return True
             
             

@@ -2,13 +2,18 @@
 Modul for a Counter thread showing the Current "Clock Time" of the "virtual" CPU
 """
 
+# Library Imports
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 
+# Module Imports
 from src.processor import Processor
-from src.const import FCFS, SJF, PROCESS_LIST, HELPER, SRTF, RR, LAST_PID
+from src.const import FCFS, SJF, PROCESS_LIST, HELPER, SRTF, RR
 from src.process import Process
+from src.decision import first_come_first_serve, smallest_job_first 
+from src.decision import shortest_remaining_time_first, round_robin
+
 
 class Scheduler(QRunnable):
     """
@@ -28,63 +33,33 @@ class Scheduler(QRunnable):
 
     def run(self):
 
+        # Necessarities
         single_core = Processor()
 
-
-        if self.schedule_mode == FCFS:
-            self.first_come_first_serve(single_core)
-            return
-
-        elif self.schedule_mode == SJF:
-            self.smallest_job_first(single_core)
-            return
-
-        elif self.schedule_mode == SRTF:
-            self.shortest_remaining_time_first(single_core)
-
-        elif self.schedule_mode == RR:
-            self.round_robin(single_core)
-
-        else:
-            self.window.display_text("Error Occured!")
-            return
-
-#----------------------------------------------------------------------------------------------------------
-# First Come - First Serve
-#----------------------------------------------------------------------------------------------------------
-    def first_come_first_serve(self, single_core):
-        """
-        First Come First Serve Scheduler Implementation
-        param - {obj} - single_core - Object of Class Processor, inheriting a system clock
-        return - {int} - default Zero
-        """
-
         # Create User Output
-        HELPER[0].schedule_start_message(self, FCFS)
+        HELPER[0].schedule_start_message(self, self.schedule_mode)
 
-        # scheduling - loop
+        # Scheduling - loop
         while len(PROCESS_LIST) > 0:
 
-            process_found = False
-            first_call = True
+            # Determine which Scheduler an get the decision accordingly
+            if self.schedule_mode == FCFS:
+                process_found, active_index, finish = first_come_first_serve(single_core)
 
-            # Search smallest arrival time
-            for index in range(0, len(PROCESS_LIST)):
-                
-                # Initial Case but needs to be arrived yet
-                if PROCESS_LIST[index].get_arrival_time() <= single_core.get_clock_time():
-                
-                    # Store Index that fulfills requirement of being lesser than compared arrival_time and greater or equal to system clock
-                    if not first_call:
-                        if PROCESS_LIST[smallest].get_arrival_time() > PROCESS_LIST[index].get_arrival_time():
-                            smallest = index
-                            process_found = True
+            elif self.schedule_mode == SJF:
+                process_found, active_index, finish = smallest_job_first(single_core)
 
-                    else:
-                        smallest = index
-                        process_found = True
-                        first_call = False
-        
+            elif self.schedule_mode == SRTF:
+                process_found, active_index, finish = shortest_remaining_time_first(single_core)
+
+            elif self.schedule_mode == RR:
+                process_found, active_index, finish = round_robin(single_core)
+
+            else:
+                self.window.display_text("Error Occured! Please try again!")
+                return
+
+
             # CPU got to wait, no Process arrived yet
             if not process_found:
                 self.window.display_text(f"No Process in Queue. Running Empty...")
@@ -93,174 +68,14 @@ class Scheduler(QRunnable):
                     
             else:
 
-                # Finish the process because this algo has no context switching
-                single_core.work_process(self, smallest, FCFS, single_core)
+                # Put the CPU to work according to the decisions made
+                single_core.work_process(self, active_index, self.schedule_mode, single_core, finish)
+
 
         # Finish Message
-        self.window.display_text(f"Finished all Processes with First Come - First Serve!")
+        self.window.display_text(f"Finished all Processes!")
         self.window.display_text(f"Average Waiting Time: {single_core.get_average_waiting()}")
 
         return
 
-#----------------------------------------------------------------------------------------------------------
-# Smallest Job First
-#----------------------------------------------------------------------------------------------------------
-
-    def smallest_job_first(self, single_core):
-        """
-        Choose by smallest burst_time; no context_switching
-        param - {obj} - single_core - Object of Processor for the System Clock
-        return - {int} - default Zero
-        """
-
-        # Create User Output
-        HELPER[0].schedule_start_message(self, SJF)
-
-        # Scheduling - loop
-        while len(PROCESS_LIST) > 0:
-
-                # Determine Process with shortest burst time, and if there are even processes waiting
-
-                found_process = False
-                first_call = True
-
-                # Check every Process in line
-                for index in range(0, len(PROCESS_LIST)):
-
-                    # Check if the process is even arrived yet
-                    if PROCESS_LIST[index].get_arrival_time() <= single_core.get_clock_time():
-
-                        # Differ from first call to even have something to compare
-                        if not first_call:
-
-                            # Check burst time, if smaller this process becomes the new to beat
-                            if PROCESS_LIST[index].get_burst_time() < fastest_burst_time:
-                                    fastest_index = index
-                                    fastest_burst_time = PROCESS_LIST[index].get_burst_time()
-
-                        else:
-                            fastest_index = index
-                            fastest_burst_time = PROCESS_LIST[index].get_burst_time()
-                            first_call = False
-                            found_process = True
-
-
-                if not found_process:
-                    self.window.display_text(f"No Process in Queue. Running Empty...")
-                    self.window.display_text(f"System-Clock: {single_core.get_clock_time_step()}")
-                    single_core.work()
-                    
-                else:
-                    # Finish the process because there is no context switching in SJF
-                    single_core.work_process(self, fastest_index, SJF, single_core)
-
-        # Finish Message
-        self.window.display_text(f"Finished all Processes with Smallest Job First!")
-        self.window.display_text(f"Average Waiting Time: {single_core.get_average_waiting()}")
-
-        return
-
-#----------------------------------------------------------------------------------------------------------
-# Shortest Remaining Time First
-#----------------------------------------------------------------------------------------------------------
-    def shortest_remaining_time_first(self, single_core):
-        """
-        Implemtation of the SRTF Algorithm, now we start context switching!
-        param - {obj} - single_core - instance of processor
-        """
-
-        # Create User Output
-        HELPER[0].schedule_start_message(self, SRTF)
-
-        while len(PROCESS_LIST) > 0:
-            
-            
-            # Determine Process with shortest burst time, and if there are even processes waiting
-
-            found_process = False
-            first_call = True
-
-            # Check every Process in line
-            for index in range(0, len(PROCESS_LIST)):
-
-                # Check if the process is even arrived yet
-                if PROCESS_LIST[index].get_arrival_time() <= single_core.get_clock_time():
-
-                    # Differ from first call to even have something to compare
-                    if not first_call:
-
-                        # Check burst time, if smaller this process becomes the new to beat
-                        if PROCESS_LIST[index].get_burst_time() < fastest_burst_time:
-                                fastest_index = index
-                                fastest_burst_time = PROCESS_LIST[index].get_burst_time()
-
-                    else:
-                        fastest_index = index
-                        fastest_burst_time = PROCESS_LIST[index].get_burst_time()
-                        first_call = False
-                        found_process = True
-
-
-            if not found_process:
-                self.window.display_text(f"No Process in Queue. Running Empty...")
-                self.window.display_text(f"System-Clock: {single_core.get_clock_time_step()}")
-                single_core.work()
-                    
-            else:
-                # Work the process until a new one arrives
-                single_core.work_process(self, fastest_index, SRTF, single_core, False)
-
-
-        # Finish Message
-        self.window.display_text(f"Finished all Processes with Shortest Remaining Time First")
-        self.window.display_text(f"Average Waiting Time: {single_core.get_average_waiting()}")
-
-        return
-
-#----------------------------------------------------------------------------------------------------------
-# Round Robin
-#----------------------------------------------------------------------------------------------------------
-    def round_robin(self, single_core):
-        """
-        Implemtation of the RR Scheduler
-        param - {obj} - single_core - instance of processor
-        """
-
-        # Create User Output
-        HELPER[0].schedule_start_message(self, RR)
-
-        while len(PROCESS_LIST) > 0:
-            
-            # Search for process to choose
-            found_process = False
-            for i in range(0, len(PROCESS_LIST)):
-                
-                # Process has to be arrived
-                if PROCESS_LIST[i].get_arrival_time() <= single_core.get_clock_time():
-
-                    # Process must differ from last one
-                    if PROCESS_LIST[i].get_pid() != LAST_PID[0]:
-                        found_process = True
-                        active_index = i
-
-                    # Possible that only one Process is left, so it comes two times in a row
-                    elif len(PROCESS_LIST) == 1:
-                        found_process = True
-                        active_index = i
-
-            if not found_process:
-                self.window.display_text(f"No Process in Queue. Running Empty...")
-                self.window.display_text(f"System-Clock: {single_core.get_clock_time_step()}")
-                single_core.work()
-
-            else:
-                # Work the process until the process is finished or the quantum is triggered
-                single_core.work_process(self, active_index, RR, single_core, False)
-
-
-        # Finish Message
-        self.window.display_text(f"Finished all Processes with Round Robin Scheduling")
-        self.window.display_text(f"Average Waiting Time: {single_core.get_average_waiting()}")
-
-        return
                            

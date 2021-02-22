@@ -29,4 +29,4 @@ TEXT_DELAY  = 0.035
 # RR - Variables -----------------------------------------------------------
 
 RR_QUANTUM = [0]
-LAST_PID = [0]
+LAST_RR_INDEX = [-1]

@@ -42,7 +42,7 @@ class Processor():
         return round(self.waited_time / self.computed_amount, 2)
 
 
-    def work_process(self, scheduler_runnable, index, scheduler, single_core, finish = True):
+    def work_process(self, scheduler_runnable, index, scheduler, single_core, finish):
         """
         Function to finish a process completly and behave accordingly
         param - {obj} - scheduler_runnable - QRunnable of the Scheduler in the window
