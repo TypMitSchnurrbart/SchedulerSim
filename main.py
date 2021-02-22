@@ -47,6 +47,7 @@ class Window(QMainWindow, Ui_main_window):
         self.pushButton_add.clicked.connect(self.add_process_to_queue)
         self.pushButton_start.clicked.connect(self.determine_scheduler)
         self.pushButton_cancel.clicked.connect(self.cancel_all)
+        self.pushButton_help.clicked.connect(self.open_help)
 
 
     def add_process_to_queue(self):
@@ -120,19 +121,23 @@ class Window(QMainWindow, Ui_main_window):
 
         return
 
+
     def cancel_all(self):
         """
         Function to clear all add Processes 
         """
 
-        # Delete all added Processes
-        for i in range(0, len(PROCESS_LIST)):
-            del PROCESS_LIST[i]
+        # Delete all added Processes from the back to have it nice and smooth
+        max_range = len(PROCESS_LIST)
+        for i in range(0, max_range):
+            index = (max_range - 1) - i
+            del PROCESS_LIST[index]
 
         # Reset all SpinBoxes
         self.reset_spin_boxes()
 
         self.display_text("Cleared all processes in Queue!")
+
 
     def reset_spin_boxes(self):
         """
@@ -157,6 +162,12 @@ class Window(QMainWindow, Ui_main_window):
         time.sleep(TEXT_DELAY) 
         self.terminal_output.append(f"{HELPER[0].get_current_time()}{output}")
         self.terminal_output.ensureCursorVisible()
+
+        return
+
+    def open_help(self):
+        url = QUrl('https://en.wikipedia.org/wiki/Scheduling_(computing)')
+        QDesktopServices.openUrl(url)
 
         return
         
