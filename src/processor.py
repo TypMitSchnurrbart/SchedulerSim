@@ -2,8 +2,10 @@
 Creating a Class represeting the function of the processor
 """
 
+# Library imports
 import time
 
+# Module imports
 from src.const import SLEEPER, PROCESS_LIST, HELPER
 
 class Processor():
@@ -56,7 +58,7 @@ class Processor():
         active_process = PROCESS_LIST[index]
 
         # "Process" the smallest process
-        scheduler_runnable.window.display_text("<br>")
+        scheduler_runnable.window.display_end_line()
         scheduler_runnable.window.display_text(f"Starting to process {active_process.get_pid()} with Burst Time: {active_process.get_burst_time()}!=======================")
 
         # Declaring some needed variables
@@ -89,14 +91,12 @@ class Processor():
                         PROCESS_LIST[i].set_waiting_time(iterator + 1)
 
                 # Context Switch Message
-                scheduler_runnable.window.display_text("<br><br>")
-                scheduler_runnable.window.display_text("Performing a Context Switch...")
-                scheduler_runnable.window.display_text("<br><br>")
+                scheduler_runnable.window.display_end_line()
+                scheduler_runnable.window.display_text("  =======  Performing a Context Switch... =======")
                 return
 
         # Finished Message
         scheduler_runnable.window.display_text(f"Finished Processing: {active_pid}! =================================")
-        scheduler_runnable.window.display_text("<br><br>")
 
         # Store time the process had to wait in its live and remeber that the core finished a process
         self.set_waited_time(active_process.get_waiting_time())

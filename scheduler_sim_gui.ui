@@ -382,9 +382,9 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>20</y>
+       <y>10</y>
        <width>211</width>
-       <height>41</height>
+       <height>31</height>
       </rect>
      </property>
      <property name="font">
@@ -404,15 +404,15 @@
     <widget class="QRadioButton" name="radio_fcfs">
      <property name="geometry">
       <rect>
-       <x>20</x>
-       <y>70</y>
+       <x>50</x>
+       <y>50</y>
        <width>221</width>
        <height>21</height>
       </rect>
      </property>
      <property name="font">
       <font>
-       <pointsize>14</pointsize>
+       <pointsize>12</pointsize>
       </font>
      </property>
      <property name="text">
@@ -422,15 +422,15 @@
     <widget class="QRadioButton" name="radio_sjf">
      <property name="geometry">
       <rect>
-       <x>20</x>
-       <y>100</y>
+       <x>50</x>
+       <y>80</y>
        <width>221</width>
        <height>21</height>
       </rect>
      </property>
      <property name="font">
       <font>
-       <pointsize>14</pointsize>
+       <pointsize>12</pointsize>
       </font>
      </property>
      <property name="text">
@@ -440,15 +440,15 @@
     <widget class="QRadioButton" name="radio_srtf">
      <property name="geometry">
       <rect>
-       <x>270</x>
-       <y>70</y>
+       <x>290</x>
+       <y>50</y>
        <width>281</width>
        <height>21</height>
       </rect>
      </property>
      <property name="font">
       <font>
-       <pointsize>14</pointsize>
+       <pointsize>12</pointsize>
       </font>
      </property>
      <property name="text">
@@ -458,19 +458,73 @@
     <widget class="QRadioButton" name="radio_rrobin">
      <property name="geometry">
       <rect>
-       <x>270</x>
-       <y>100</y>
-       <width>281</width>
+       <x>50</x>
+       <y>110</y>
+       <width>231</width>
        <height>21</height>
       </rect>
      </property>
      <property name="font">
       <font>
-       <pointsize>14</pointsize>
+       <pointsize>12</pointsize>
       </font>
      </property>
      <property name="text">
       <string>Round Robin</string>
+     </property>
+    </widget>
+    <widget class="QRadioButton" name="radio_pbs">
+     <property name="geometry">
+      <rect>
+       <x>290</x>
+       <y>80</y>
+       <width>141</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>12</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Priority Based </string>
+     </property>
+    </widget>
+    <widget class="QRadioButton" name="radio_edf">
+     <property name="geometry">
+      <rect>
+       <x>290</x>
+       <y>110</y>
+       <width>211</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>12</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Earliest Deadline First</string>
+     </property>
+    </widget>
+    <widget class="QRadioButton" name="radio_hrrn">
+     <property name="geometry">
+      <rect>
+       <x>610</x>
+       <y>50</y>
+       <width>231</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>12</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Highest Response Ratio Next</string>
      </property>
     </widget>
    </widget>

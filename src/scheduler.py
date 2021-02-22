@@ -8,11 +8,15 @@ from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 
 # Module Imports
-from src.processor import Processor
-from src.const import FCFS, SJF, PROCESS_LIST, HELPER, SRTF, RR
-from src.process import Process
+from src.decision import priority_based, earliest_deadline_first, highest_response_ratio_next
+from src.const import FCFS, SJF, PROCESS_LIST, HELPER, SRTF, RR, PBS, EDF, HRRN
 from src.decision import first_come_first_serve, smallest_job_first 
 from src.decision import shortest_remaining_time_first, round_robin
+
+# Class imports
+from src.processor import Processor
+from src.process import Process
+
 
 
 class Scheduler(QRunnable):
@@ -55,6 +59,15 @@ class Scheduler(QRunnable):
             elif self.schedule_mode == RR:
                 process_found, active_index, finish = round_robin(single_core)
 
+            elif self.schedule_mode == PBS:
+                process_found, active_index, finish = priority_based(single_core)
+
+            elif self.schedule_mode == EDF:
+                process_found, active_index, finish = earliest_deadline_first(single_core)
+            
+            elif self.schedule_mode == HRRN:
+                process_found, active_index, finish = highest_response_ratio_next(single_core)
+
             else:
                 self.window.display_text("Error Occured! Please try again!")
                 return
@@ -73,6 +86,7 @@ class Scheduler(QRunnable):
 
 
         # Finish Message
+        self.window.display_end_line()
         self.window.display_text(f"Finished all Processes!")
         self.window.display_text(f"Average Waiting Time: {single_core.get_average_waiting()}")
 

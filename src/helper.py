@@ -7,7 +7,7 @@ from datetime import datetime
 
 # Modul imports
 from src.process import Process
-from src.const import SJF, FCFS, SRTF, PROCESS_LIST, RR, RR_QUANTUM, LAST_RR_INDEX
+from src.const import SJF, FCFS, SRTF, PROCESS_LIST, RR, RR_QUANTUM, LAST_RR_INDEX, PBS, EDF, HRRN
 
 
 class Helper():
@@ -35,23 +35,25 @@ class Helper():
         """
 
         # Create User Output
-        scheduler_thread.window.display_text("<br><br>")
         scheduler_thread.window.display_text("------------------------------------------------------------")
 
         if scheduler == FCFS:
             scheduler_thread.window.display_text("Starting First Come - First Serve Algorithm!")
         elif scheduler == SJF:
-            scheduler_thread.window.display_text("Shortest Job First Algorithm!")
+            scheduler_thread.window.display_text("Starting Shortest Job First Algorithm!")
         elif scheduler == SRTF:
-            scheduler_thread.window.display_text("Shortest Remaining Time First!")
+            scheduler_thread.window.display_text("Starting Shortest Remaining Time First!")
         elif scheduler == RR:
-            scheduler_thread.window.display_text("Round Robin!")
+            scheduler_thread.window.display_text("Starting Round Robin Algorithm!")
+        elif scheduler == PBS:
+            scheduler_thread.window.display_text("Starting Priority Based Scheduling!")
+        elif scheduler == EDF:
+            scheduler_thread.window.display_text("Starting Earliest Deadline First Algorithm")
+        elif scheduler == HRRN:
+            scheduler_thread.window.display_text("Starting Highest Response Ratio Next Algorithm")
 
         scheduler_thread.window.display_text(f"Found {Process.number_of_processes} Processes to schedule...")
         scheduler_thread.window.display_text("------------------------------------------------------------")
-        scheduler_thread.window.display_text("<br><br>")
-
-        return
 
     @staticmethod
     def check_context_switch(scheduler, single_core, active_process, iterator):
@@ -72,6 +74,16 @@ class Helper():
                 for index in range(0, len(PROCESS_LIST)):
                     if PROCESS_LIST[index].get_pid() == active_process.get_pid():
                         LAST_RR_INDEX[0] = index
+                        return True
+
+        # Context Switch for Earliest Deadline First
+        if scheduler == EDF:
+
+            # Check if a Process is arriving that has a ealier deadline than current
+            # If so we get back to make a decision
+            for index in range(0, len(PROCESS_LIST)):
+                if PROCESS_LIST[index].get_arrival_time() == single_core.get_clock_time() + 1:
+                    if PROCESS_LIST[index].get_deadline() < active_process.get_deadline():
                         return True
             
             

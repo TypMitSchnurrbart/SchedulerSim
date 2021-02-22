@@ -14,6 +14,10 @@ from src.const import RR_QUANTUM
 
 
 class RRPopup(QDialog, Ui_rr_popup):
+    """
+    Round Robin TimeQuantum Dialog Window
+    Parents: QDialog; with Qt Designer designed Window
+    """
 
     # Class Constructor with parent Constructor as super
     def __init__(self, parent=None):

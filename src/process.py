@@ -2,9 +2,13 @@
 Class of Processes containing the Processes parameters
 """
 
+# Module imports
 from src.const import START_ID, ID_OFFSET
 
 class Process():
+    """
+    Class to implement a Process with all its variables
+    """
 
     number_of_processes = 0
     process_id_generator = START_ID
