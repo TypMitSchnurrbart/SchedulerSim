@@ -17,11 +17,13 @@ from PyQt5.QtWidgets import *
 
 # Load Constants----------------------------------------------------------
 from src.const import PROCESS_LIST, FCFS, SJF, HELPER, TEXT_DELAY, SRTF
+from src.const import RR, RR_QUANTUM
 
 # Load different Classes--------------------------------------------------
 from src.process import Process
 from src.scheduler import Scheduler
 from src.helper import Helper
+from src.rr_popup import RRPopup
 from scheduler_sim_gui import Ui_main_window
 
 
@@ -93,6 +95,15 @@ class Window(QMainWindow, Ui_main_window):
         elif self.radio_srtf.isChecked():
             self.start_scheduling(SRTF)
 
+        elif self.radio_rrobin.isChecked():
+
+            # Creatin a Dialog for the Time Quantum
+            dialog = RRPopup()
+            dialog.exec()
+
+            if RR_QUANTUM[0] != 0:
+                self.start_scheduling(RR)
+            
         else:
             self.display_text("Choose a Scheduler Algorithm!")
 
@@ -148,7 +159,7 @@ class Window(QMainWindow, Ui_main_window):
         self.terminal_output.ensureCursorVisible()
 
         return
-
+        
 
 if __name__ == "__main__":
 

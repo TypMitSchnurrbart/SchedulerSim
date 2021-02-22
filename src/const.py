@@ -15,6 +15,7 @@ PROCESS_LIST = []
 FCFS = 0
 SJF = 1
 SRTF = 2
+RR = 3
 
 # Helper ------------------------------------------------------------
 
@@ -24,3 +25,8 @@ HELPER = []
 
 SLEEPER = 0.25
 TEXT_DELAY  = 0.025
+
+# RR - Variables -----------------------------------------------------------
+
+RR_QUANTUM = [None]
+LAST_PID = [None]

@@ -404,7 +404,7 @@
     <widget class="QRadioButton" name="radio_fcfs">
      <property name="geometry">
       <rect>
-       <x>30</x>
+       <x>20</x>
        <y>70</y>
        <width>221</width>
        <height>21</height>
@@ -422,8 +422,8 @@
     <widget class="QRadioButton" name="radio_sjf">
      <property name="geometry">
       <rect>
-       <x>30</x>
-       <y>110</y>
+       <x>20</x>
+       <y>100</y>
        <width>221</width>
        <height>21</height>
       </rect>
@@ -453,6 +453,24 @@
      </property>
      <property name="text">
       <string>Shortest Remaining Time First</string>
+     </property>
+    </widget>
+    <widget class="QRadioButton" name="radio_rrobin">
+     <property name="geometry">
+      <rect>
+       <x>270</x>
+       <y>100</y>
+       <width>281</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>14</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Round Robin</string>
      </property>
     </widget>
    </widget>

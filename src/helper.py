@@ -7,7 +7,7 @@ from datetime import datetime
 
 # Modul imports
 from src.process import Process
-from src.const import SJF, FCFS, SRTF, PROCESS_LIST
+from src.const import SJF, FCFS, SRTF, PROCESS_LIST, RR
 
 
 class Helper():
@@ -44,6 +44,8 @@ class Helper():
             scheduler_thread.window.display_text("Shortest Job First Algorithm!")
         elif scheduler == SRTF:
             scheduler_thread.window.display_text("Shortest Remaining Time First!")
+        elif scheduler == RR:
+            scheduler_thread.window.display_text("Round Robin!")
 
         scheduler_thread.window.display_text(f"Found {Process.number_of_processes} Processes to schedule...")
         scheduler_thread.window.display_text("------------------------------------------------------------")

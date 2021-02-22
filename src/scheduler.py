@@ -7,7 +7,7 @@ from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 
 from src.processor import Processor
-from src.const import FCFS, SJF, PROCESS_LIST, HELPER, SRTF
+from src.const import FCFS, SJF, PROCESS_LIST, HELPER, SRTF, RR
 from src.process import Process
 
 class Scheduler(QRunnable):
@@ -42,8 +42,11 @@ class Scheduler(QRunnable):
         elif self.schedule_mode == SRTF:
             self.shortest_remaining_time_first(single_core)
 
+        elif self.schedule_mode == RR:
+            self.round_robin(single_core)
+
         else:
-            self.window.display_error()
+            self.window.display_text("Error Occured!")
             return
 
 #----------------------------------------------------------------------------------------------------------
@@ -166,6 +169,9 @@ class Scheduler(QRunnable):
         param - {obj} - single_core - instance of processor
         """
 
+        # Create User Output
+        HELPER[0].schedule_start_message(self, SRTF)
+
         while len(PROCESS_LIST) > 0:
             
             
@@ -211,4 +217,17 @@ class Scheduler(QRunnable):
 
         return
 
-                        
+#----------------------------------------------------------------------------------------------------------
+# Round Robin
+#----------------------------------------------------------------------------------------------------------
+    def round_robin(self, single_core):
+        """
+        Implemtation of the RR Scheduler
+        param - {obj} - single_core - instance of processor
+        """
+
+        # Create User Output
+        HELPER[0].schedule_start_message(self, RR)
+
+        return
+                           
