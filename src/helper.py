@@ -7,7 +7,7 @@ from datetime import datetime
 
 # Modul imports
 from src.process import Process
-from src.const import SJF, FCFS, SRTF, PROCESS_LIST, RR
+from src.const import SJF, FCFS, SRTF, PROCESS_LIST, RR, RR_QUANTUM, LAST_PID
 
 
 class Helper():
@@ -54,7 +54,7 @@ class Helper():
         return
 
     @staticmethod
-    def check_context_switch(scheduler, single_core, active_process):
+    def check_context_switch(scheduler, single_core, active_process, iterator):
 
         # Check Context Switch Condition for SRFT
         if scheduler == SRTF:
@@ -64,3 +64,11 @@ class Helper():
                 if PROCESS_LIST[i].get_arrival_time() == single_core.get_clock_time() + 1:
                     if PROCESS_LIST[i].get_burst_time() < active_process.get_burst_time():
                         return True
+
+        # Check Context Switch for RR
+        if scheduler == RR:
+            if (iterator + 1) == RR_QUANTUM[0]:
+                LAST_PID[0] = active_process.get_pid()
+                return True
+            
+            

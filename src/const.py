@@ -23,10 +23,10 @@ HELPER = []
 
 # Time --------------------------------------------------------------
 
-SLEEPER = 0.25
-TEXT_DELAY  = 0.025
+SLEEPER = 0.20
+TEXT_DELAY  = 0.035
 
 # RR - Variables -----------------------------------------------------------
 
-RR_QUANTUM = [None]
-LAST_PID = [None]
+RR_QUANTUM = [0]
+LAST_PID = [0]

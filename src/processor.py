@@ -64,13 +64,17 @@ class Processor():
         active_pid = active_process.get_pid()
         context_switch = False
 
+        # Work the Process for the given burst time
         for iterator in range(0, init_burst_time):
 
+            # Check if a Context Switch is necessary
             if not finish:
-                context_switch = HELPER[0].check_context_switch(scheduler, single_core, active_process)
+                context_switch = HELPER[0].check_context_switch(scheduler, single_core, active_process, iterator)
 
+            # Print out the Clock Time
             scheduler_runnable.window.display_text(f"System-Clock: {self.get_clock_time_step()}")
 
+            # Set the burst time new for later context switch and print the values
             active_process.set_burst_time(init_burst_time - (iterator + 1))
             scheduler_runnable.window.display_text(f"\tActive PID: {active_pid} \tRemaining Burst Time: {active_process.get_burst_time()}")
         
@@ -84,11 +88,13 @@ class Processor():
                     if PROCESS_LIST[i].get_arrival_time() <= self.get_clock_time():
                         PROCESS_LIST[i].set_waiting_time(iterator + 1)
 
+                # Context Switch Message
                 scheduler_runnable.window.display_text("<br><br>")
-                scheduler_runnable.window.display_text("Better Process found! Performing a Context Switch...")
+                scheduler_runnable.window.display_text("Performing a Context Switch...")
                 scheduler_runnable.window.display_text("<br><br>")
                 return
 
+        # Finished Message
         scheduler_runnable.window.display_text(f"Finished Processing: {active_pid}! =================================")
         scheduler_runnable.window.display_text("<br><br>")
 

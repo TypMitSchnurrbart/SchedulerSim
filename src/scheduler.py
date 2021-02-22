@@ -7,7 +7,7 @@ from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 
 from src.processor import Processor
-from src.const import FCFS, SJF, PROCESS_LIST, HELPER, SRTF, RR
+from src.const import FCFS, SJF, PROCESS_LIST, HELPER, SRTF, RR, LAST_PID
 from src.process import Process
 
 class Scheduler(QRunnable):
@@ -228,6 +228,39 @@ class Scheduler(QRunnable):
 
         # Create User Output
         HELPER[0].schedule_start_message(self, RR)
+
+        while len(PROCESS_LIST) > 0:
+            
+            # Search for process to choose
+            found_process = False
+            for i in range(0, len(PROCESS_LIST)):
+                
+                # Process has to be arrived
+                if PROCESS_LIST[i].get_arrival_time() <= single_core.get_clock_time():
+
+                    # Process must differ from last one
+                    if PROCESS_LIST[i].get_pid() != LAST_PID[0]:
+                        found_process = True
+                        active_index = i
+
+                    # Possible that only one Process is left, so it comes two times in a row
+                    elif len(PROCESS_LIST) == 1:
+                        found_process = True
+                        active_index = i
+
+            if not found_process:
+                self.window.display_text(f"No Process in Queue. Running Empty...")
+                self.window.display_text(f"System-Clock: {single_core.get_clock_time_step()}")
+                single_core.work()
+
+            else:
+                # Work the process until the process is finished or the quantum is triggered
+                single_core.work_process(self, active_index, RR, single_core, False)
+
+
+        # Finish Message
+        self.window.display_text(f"Finished all Processes with Round Robin Scheduling")
+        self.window.display_text(f"Average Waiting Time: {single_core.get_average_waiting()}")
 
         return
                            
